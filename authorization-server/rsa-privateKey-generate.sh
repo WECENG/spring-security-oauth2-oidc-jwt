@@ -1,0 +1,1 @@
+openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048

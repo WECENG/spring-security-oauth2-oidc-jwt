@@ -1,0 +1,39 @@
+#log
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        security:
+          oauth2: DEBUG
+          oauth2.client: DEBUG
+          oauth2.core: DEBUG
+          oauth2.server: DEBUG
+
+server:
+  port: 8001
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          login-client:
+            # OAuth2 Login Client
+            client-id: login_client
+            client-secret: client_secret
+            authorization-grant-type: authorization_code
+            redirect-uri: http://127.0.0.1:8001/login/oauth2/code/login-client
+            scope: read, write, openid, profile
+            client-name: OAuth2 Login Client
+            provider: oauth2-server
+        provider:
+          oauth2-server:
+            authorization-uri: http://oauth2server.com:9000/oauth2/authorize
+            token-uri: http://oauth2server.com:9000/oauth2/token
+            #algor keys
+            jwk-set-uri: http://oauth2server.com:9000/oauth2/jwks
+            user-info-uri: http://oauth2server.com:9000/userinfo
+            # account attribute
+            user-name-attribute: sub
+  application:
+    name: web-client

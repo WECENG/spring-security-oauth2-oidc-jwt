@@ -1,0 +1,21 @@
+#日志
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          oauth2: DEBUG
+          oauth2.client: DEBUG
+          oauth2.core: DEBUG
+          oauth2.server: DEBUG
+
+server:
+  port: 9000
+spring:
+  application:
+    name: authorization-server
+jwt:
+  private:
+    key: classpath:private.key
+  public:
+    key: classpath:public.key
