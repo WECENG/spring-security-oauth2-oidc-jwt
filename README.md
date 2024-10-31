@@ -34,4 +34,6 @@
 
   @RestController 等同于 @Controller + @ResponseBody，它告诉 Spring 不要进行视图解析，而是直接将返回的数据作为 HTTP 响应的主体。因此，当你使用 @RestController 时，Thymeleaf 模板引擎不会被调用，因为它不会去解析视图，而是直接返回 JSON 或其他格式的数据。
 
+- **client_credentials 与 authorization_code 对比**
+
 - 

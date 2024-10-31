@@ -1,0 +1,46 @@
+#log
+logging:
+  level:
+    org:
+      springframework:
+        web: TRACE
+        security:
+          oauth2: TRACE
+          oauth2.client: TRACE
+          oauth2.core: TRACE
+          oauth2.server: TRACE
+
+server:
+  port: 8006
+BASE-URL: http://oauth2secretclient.com:${server.port}
+spring:
+  application:
+    name: secret-client
+  security:
+    oauth2:
+      client:
+        registration:
+          secret-client:
+            #信息来源于com.weceng.client.ClientRegistrarTest结果
+            client-name: secret-client
+            client-id: secret-client
+            #填入的是注册成功后返回的client-secret原文，而非查询出来的密文
+            client-secret: secret-client-secret
+            # 以BASE64(client_id:client_secret)的形式加密注册
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: authorization_code
+            redirect-uri: ${BASE-URL}/login/oauth2/code/secret-client
+            scope:
+              - read
+              - write
+              - openid
+            provider: auth-server
+        provider:
+          auth-server:
+            authorization-uri: http://oauth2server.com:9000/oauth2/authorize
+            token-uri: http://oauth2server.com:9000/oauth2/token
+            #algor keys
+            jwk-set-uri: http://oauth2server.com:9000/oauth2/jwks
+            user-info-uri: http://oauth2server.com:9000/userinfo
+            # account attribute
+            user-name-attribute: sub

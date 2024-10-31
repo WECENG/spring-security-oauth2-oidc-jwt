@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
-import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -25,12 +24,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static com.weceng.auth.server.configure.DynamicClientMetadataConfig.dynamicClientMetadataProviders;
 
 /**
  * <p>
@@ -106,7 +103,30 @@ public class AuthorizationServerConfig {
                         .build())
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
                 .build();
-        return new InMemoryRegisteredClientRepository(registeredLoginClient, registeredClientA, registeredClientB);
+
+        RegisteredClient registrarClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("registrar-client")
+                .clientSecret("{noop}registrar-client-secret")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri("http://oauth2registrar.com:8004/login/oauth2/code/registrar-client")
+                .redirectUri("http://oauth2registrar.com:8004/authorized")
+                .scope("read")
+                .scope("write")
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                //必须包含该scope才可用该注册器注册其他客户端
+                .scope("client.create")
+                .scope("client.read")
+                .tokenSettings(TokenSettings.builder()
+                        .accessTokenTimeToLive(Duration.ofHours(1))
+                        .refreshTokenTimeToLive(Duration.ofDays(3))
+                        .build())
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
+                .build();
+
+        return new InMemoryRegisteredClientRepository(registeredLoginClient, registeredClientA, registeredClientB, registrarClient);
     }
 
     /**
@@ -149,7 +169,8 @@ public class AuthorizationServerConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .oidc(Customizer.withDefaults());
+                .oidc(oidc -> oidc.clientRegistrationEndpoint(clientRegistrationEndpoint ->
+                        clientRegistrationEndpoint.authenticationProviders(dynamicClientMetadataProviders())));
         http.exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
                 )

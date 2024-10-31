@@ -24,6 +24,7 @@
         <module>authorization-server</module>
         <module>login-client</module>
         <module>oauth2-sso</module>
+        <module>dynamic-client</module>
     </modules>
 
 

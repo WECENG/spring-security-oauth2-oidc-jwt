@@ -4,20 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.weceng</groupId>
-        <artifactId>spring-security-oauth2-jwt</artifactId>
+        <artifactId>dynamic-client</artifactId>
         <version>1.0.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <artifactId>oauth2-sso</artifactId>
+    <artifactId>public-client</artifactId>
     <version>${auth.version}</version>
-    <name>oauth2-sso</name>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>web-client-a</module>
-        <module>web-client-b</module>
-    </modules>
+    <name>public-client</name>
 
     <properties>
         <java.version>17</java.version>
@@ -27,6 +21,21 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
         <dependency>

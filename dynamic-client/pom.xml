@@ -6,17 +6,17 @@
         <groupId>com.weceng</groupId>
         <artifactId>spring-security-oauth2-jwt</artifactId>
         <version>1.0.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/><!-- lookup parent from repository -->
     </parent>
 
-    <artifactId>oauth2-sso</artifactId>
+    <artifactId>dynamic-client</artifactId>
     <version>${auth.version}</version>
-    <name>oauth2-sso</name>
+    <name>dynamic-client</name>
     <packaging>pom</packaging>
 
     <modules>
-        <module>web-client-a</module>
-        <module>web-client-b</module>
+        <module>registrar-client</module>
+        <module>public-client</module>
     </modules>
 
     <properties>

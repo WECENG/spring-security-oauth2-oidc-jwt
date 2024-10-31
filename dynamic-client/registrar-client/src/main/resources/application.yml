@@ -1,0 +1,42 @@
+#log
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        security:
+          oauth2: DEBUG
+          oauth2.client: DEBUG
+          oauth2.core: DEBUG
+          oauth2.server: DEBUG
+
+server:
+  port: 8004
+BASE-URL: http://oauth2registrar.com:${server.port}
+spring:
+  application:
+    name: registrar-client
+  security:
+    oauth2:
+      client:
+        registration:
+          registrar-client:
+            client-id: registrar-client
+            client-secret: registrar-client-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: ${BASE-URL}/login/oauth2/code/registrar-client
+            scope:
+              - read
+              - write
+              - profile
+              - openid
+            provider: auth-server
+        provider:
+          auth-server:
+            authorization-uri: http://oauth2server.com:9000/oauth2/authorize
+            token-uri: http://oauth2server.com:9000/oauth2/token
+            #algor keys
+            jwk-set-uri: http://oauth2server.com:9000/oauth2/jwks
+            user-info-uri: http://oauth2server.com:9000/userinfo
+            # account attribute
+            user-name-attribute: sub

@@ -3,11 +3,12 @@ logging:
   level:
     org:
       springframework:
+        web: TRACE
         security:
-          oauth2: DEBUG
-          oauth2.client: DEBUG
-          oauth2.core: DEBUG
-          oauth2.server: DEBUG
+          oauth2: TRACE
+          oauth2.client: TRACE
+          oauth2.core: TRACE
+          oauth2.server: TRACE
 
 server:
   port: 9000

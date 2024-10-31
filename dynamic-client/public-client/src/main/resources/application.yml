@@ -1,0 +1,47 @@
+#log
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        security:
+          oauth2: DEBUG
+          oauth2.client: DEBUG
+          oauth2.core: DEBUG
+          oauth2.server: DEBUG
+
+server:
+  port: 8005
+BASE-URL: http://oauth2publicclient.com:${server.port}
+spring:
+  application:
+    name: public-client
+  security:
+    oauth2:
+      client:
+        registration:
+          public-client:
+            #信息来源于com.weceng.client.ClientRegistrarTest结果
+            client-name: public-client
+            client-id: Y3NSQNu54rWScwXMRqNXeHaWiqgK2XCEIFv5GZplQnc
+#            client-secret: 'M2cYAvd8Ix8c8gM0Z9u1cW8uCvuGnZP42d5xuS_QazGeHvucxBXOooQZJwZbrUKB'
+            # 如果启用了pkce,需要将其设置为"none"。
+            # 代码见org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationProvider
+            # 146行。表明该应用为public client, 即client-secret将无效。同时要求动态注册时，该值也需设置none
+            client-authentication-method: none
+            authorization-grant-type: authorization_code
+            redirect-uri: ${BASE-URL}/login/oauth2/code/public-client
+            scope:
+              - read
+              - write
+              - openid
+            provider: auth-server
+        provider:
+          auth-server:
+            authorization-uri: http://oauth2server.com:9000/oauth2/authorize
+            token-uri: http://oauth2server.com:9000/oauth2/token
+            #algor keys
+            jwk-set-uri: http://oauth2server.com:9000/oauth2/jwks
+            user-info-uri: http://oauth2server.com:9000/userinfo
+            # account attribute
+            user-name-attribute: sub
